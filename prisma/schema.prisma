@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String  @id @default(uuid()) // Correspond à auth.users.id
+  email     String  @unique
+  firstName String
+  lastName  String
+  phone     String?
+  role      String?
+  orders    Order[]
+  reviews   Review[]
+
+  @@map("users") // Pour correspondre à la table Supabase
+}
+
+model Pizzeria {
+  id          Int       @id @default(autoincrement())
+  name        String
+  address     String
+  description String?
+  openingHours String?
+  status      String?
+  menus       Menu[]
+  orders      Order[]
+  reviews     Review[]
+}
+
+model Menu {
+  id          Int       @id @default(autoincrement())
+  pizzeriaId  Int
+  pizzeria    Pizzeria @relation(fields: [pizzeriaId], references: [id])
+  name        String
+  description String?
+  price       Float
+  imageUrl    String?
+  available   Boolean   @default(true)
+}
+
+model Order {
+  id         Int      @id @default(autoincrement())
+  customerId String @default(uuid())
+  customer   User   @relation(fields: [customerId], references: [id])
+  pizzeriaId Int
+  pizzeria   Pizzeria @relation(fields: [pizzeriaId], references: [id])
+  status     String
+  totalPrice Float
+  orderDate  DateTime @default(now())
+  payment    Payment?
+}
+
+model Review {
+  id         Int      @id @default(autoincrement())
+  customerId String
+  customer   User     @relation(fields: [customerId], references: [id])
+  pizzeriaId Int
+  pizzeria   Pizzeria @relation(fields: [pizzeriaId], references: [id])
+  rating     Int
+  comment    String?
+}
+
+model Payment {
+  id           Int      @id @default(autoincrement())
+  orderId      Int      @unique
+  order        Order    @relation(fields: [orderId], references: [id])
+  amount       Float
+  paymentMethod String
+  status       String
+  paymentDate  DateTime @default(now())
+}
