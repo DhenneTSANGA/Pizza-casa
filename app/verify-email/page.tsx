@@ -4,10 +4,10 @@
 import { CheckCircle, Mail, RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { supabase } from '@/utils/supabase/client'
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [isLoading, setIsLoading] = useState(false)
@@ -84,42 +84,40 @@ export default function VerifyEmailPage() {
             </div>
             <h2 className="mt-6 text-2xl font-bold text-gray-900">Vérifiez votre email</h2>
             <p className="mt-2 text-gray-600">
-              Nous avons envoyé un lien de confirmation <span className="font-semibold">{email}</span>
+              Nous avons envoyé un lien de confirmation à votre adresse email.
+              Veuillez cliquer sur ce lien pour activer votre compte.
             </p>
-            
-            <div className="bg-blue-50 p-4 rounded-md text-left mt-4">
-              <h3 className="text-sm font-medium text-blue-800">Que faire ensuite?</h3>
-              <ol className="list-decimal list-inside mt-2 text-sm text-blue-700 space-y-1">
-                <li>Ouvrez votre boîte mail</li>
-                <li>Cliquez sur le lien de confirmation pour finaliser votre paiement.</li>
-              
-              </ol>
-            </div>
-
-            <div className="mt-6">
+            <div className="mt-4">
               <Button
                 onClick={resendConfirmation}
                 disabled={isLoading}
-                className="w-full bg-[#ac1f1f] hover:bg-[#8e1a1a]"
+                className="w-full bg-[#ac1f1f] hover:bg-[#FF914D] text-white"
               >
                 {isLoading ? (
-                  <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
-                ) : null}
-                Renvoyer l'email de confirmation
+                  <>
+                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                    Envoi en cours...
+                  </>
+                ) : (
+                  "Renvoyer l'email de confirmation"
+                )}
               </Button>
-            </div>
-
-            <div className="mt-4 text-sm text-gray-500">
-              <p>Vous n'avez pas reçu l'email?</p>
-              <ul className="mt-1 space-y-1">
-                <li>• Vérifiez vos spams ou courriers indésirables</li>
-                <li>• Assurez-vous d'avoir saisi le bon email</li>
-                <li>• Contactez notre support si le problème persiste</li>
-              </ul>
             </div>
           </>
         )}
       </div>
     </div>
+  )
+}
+
+export default function VerifyEmailPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ac1f1f]"></div>
+      </div>
+    }>
+      <VerifyEmailContent />
+    </Suspense>
   )
 }

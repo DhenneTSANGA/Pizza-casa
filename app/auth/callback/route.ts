@@ -5,7 +5,6 @@ import { cookies } from 'next/headers'
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url)
   const code = requestUrl.searchParams.get('code')
-  const redirect = requestUrl.searchParams.get('redirect') || '/'
 
   if (code) {
     const cookieStore = cookies()
@@ -13,6 +12,6 @@ export async function GET(request: Request) {
     await supabase.auth.exchangeCodeForSession(code)
   }
 
-  // URL to redirect to after sign in process completes
-  return NextResponse.redirect(new URL(redirect, requestUrl.origin))
+  // Rediriger vers la nouvelle page de traitement
+  return NextResponse.redirect(new URL('/auth/auth-processing', requestUrl.origin))
 }

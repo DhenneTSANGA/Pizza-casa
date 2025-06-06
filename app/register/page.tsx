@@ -1,4 +1,5 @@
 import AuthForm from '@/components/auth/AuthForm'
+import { Suspense } from 'react'
 
 export default function RegisterPage() {
   return (
@@ -8,7 +9,13 @@ export default function RegisterPage() {
           <h1 className="text-2xl font-bold">Inscription</h1>
           <p className="mt-2 text-gray-600">Créez votre compte</p>
         </div>
-        <AuthForm type="register" />
+        <Suspense fallback={
+          <div className="flex items-center justify-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ac1f1f]"></div>
+          </div>
+        }>
+          <AuthForm type="register" />
+        </Suspense>
       </div>
     </div>
   )

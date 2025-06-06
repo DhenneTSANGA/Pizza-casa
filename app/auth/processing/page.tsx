@@ -6,7 +6,7 @@ import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/utils/supabase/client'
 
-export default function AuthCallback() {
+export default function AuthProcessing() {
   const router = useRouter()
 
   useEffect(() => {
@@ -19,8 +19,7 @@ export default function AuthCallback() {
 
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <p>Processing authentication...</p>
+      <p>Traitement de l'authentification en cours...</p>
     </div>
   )
-}
-
+} 
